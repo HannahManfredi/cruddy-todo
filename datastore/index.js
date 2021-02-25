@@ -53,44 +53,48 @@ exports.readOne = (id, callback) => {
 
 };
 
-// var item = items[id];
-  // if (!item) {
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   items[id] = text;
-  //   callback(null, { id, text });
-  // }
 exports.update = (id, text, callback) => {
-  //rewrite the todo item stored in the dataDir based on its id
-  //use id to check if file exists
-    //if it exists
-      //overwrite text
+
   const route = path.join(exports.dataDir, `${id}.txt`);
-  fs.readFile(route, (err, data) => {
-    if(err) {
-      console.log('file does not exist')
+  fs.stat(route, (err, data) => {
+    if (err) {
+      callback(err);
     } else {
-      fs.writeFile(route, text, (err, data) => {
+      fs.readFile(route, (err, data) => {
         if (err) {
           callback(err);
         } else {
-          callback(null, { id: id, text: text});
+          fs.writeFile(route, text, (err, data) => {
+            if (err) {
+              callback(err);
+            } else {
+              callback(null, { id: id, text: text});
+            }
+          });
         }
       });
     }
-  });
+  })
 
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+
+  const route = path.join(exports.dataDir, `${id}.txt`);
+  fs.stat(route, (err, data) => {
+    if (err) {
+      callback(err);
+    } else {
+      fs.unlink(route, (err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          callback();
+        }
+      })
+    }
+  });
+
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
@@ -103,9 +107,9 @@ exports.initialize = () => {
   }
 };
 
-// Updating a Todo
-// Next, refactor the update function to rewrite the todo item stored in the dataDir based on its id.
+// Deleting a Todo
+// Lastly, refactor the delete function to remove the todo file stored in the dataDir based on the supplied id.
 
-// You'll know this is working because you'll be able to save the edited todo item and upon subsequent clicks of the edit button, the changes will persist. You should also confirm the counter isn't changing between updates. Refreshing the page should also show the updated todo.
+// You'll know this is working because when you refresh the page, the delete todo item will no longer be present.
 
-// Commit your progress: "Complete updating a todo"
+// Commit your progress: "Complete deleting a todo"
