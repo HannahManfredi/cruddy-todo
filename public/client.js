@@ -37,6 +37,7 @@ $(() => {
   $('#form button').click( (event) => {
     var text = $('#form input').val().trim();
     if (text) {
+      console.log('inside click handler in client');
       Todo.create(text, addTodo);
     }
     $('#form input').val('');
