@@ -41,13 +41,6 @@ exports.readAll = (callback) => {
 
 };
 
-  // var text = items[id];
-  // if (!text) {
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   callback(null, { id, text });
-  // }
-
 exports.readOne = (id, callback) => {
   const route = path.join(exports.dataDir, `${id}.txt`);
   fs.readFile(route, (err, data) => {
@@ -60,14 +53,33 @@ exports.readOne = (id, callback) => {
 
 };
 
+// var item = items[id];
+  // if (!item) {
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   items[id] = text;
+  //   callback(null, { id, text });
+  // }
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  //rewrite the todo item stored in the dataDir based on its id
+  //use id to check if file exists
+    //if it exists
+      //overwrite text
+  const route = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(route, (err, data) => {
+    if(err) {
+      console.log('file does not exist')
+    } else {
+      fs.writeFile(route, text, (err, data) => {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, { id: id, text: text});
+        }
+      });
+    }
+  });
+
 };
 
 exports.delete = (id, callback) => {
@@ -91,9 +103,9 @@ exports.initialize = () => {
   }
 };
 
-// Retrieving one Todo
-// Next, refactor the readOne to read a todo item from the dataDir based on the message's id. For this function, you must read the contents of the todo item file and respond with it to the client.
+// Updating a Todo
+// Next, refactor the update function to rewrite the todo item stored in the dataDir based on its id.
 
-// You'll know you've correctly written this function because when you click edit on the UI, you'll see the todo text in the popup window.
+// You'll know this is working because you'll be able to save the edited todo item and upon subsequent clicks of the edit button, the changes will persist. You should also confirm the counter isn't changing between updates. Refreshing the page should also show the updated todo.
 
-// Commit your progress: "Complete retrieving one todo"
+// Commit your progress: "Complete updating a todo"
