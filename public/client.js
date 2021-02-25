@@ -35,6 +35,7 @@ $(() => {
   // Controller //////////////////////////////////////////////////////////////////
 
   $('#form button').click( (event) => {
+    console.log('clicked');
     var text = $('#form input').val().trim();
     if (text) {
       console.log('inside click handler in client');
